@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>NAAGRIK — Know Your Rights</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --navy:        #0D1B2A;
+  --navy-mid:    #142236;
+  --navy-light:  #1E3350;
+  --teal:        #1A7A6E;
+  --teal-light:  #22A090;
+  --red:         #C0392B;
+  --red-glow:    rgba(192,57,43,.25);
+  --gold:        #D4A843;
+  --parchment:   #F5EDD6;
+  --white:       #FAFAF8;
+  --muted:       rgba(250,250,248,.45);
+  --border:      rgba(250,250,248,.10);
+  --card-bg:     rgba(255,255,255,.04);
+  --input-bg:    rgba(255,255,255,.07);
+  --radius:      12px;
+  --radius-sm:   8px;
+  --radius-lg:   18px;
+  --nav-h:       64px;
+  --top-h:       56px;
+  --font-disp:   'Rajdhani', sans-serif;
+  --font-body:   'Inter', sans-serif;
+}
+[data-theme="light"] {
+  --navy:        #F0F4FA;
+  --navy-mid:    #E4EAF4;
+  --navy-light:  #D0DAF0;
+  --border:      rgba(13,27,42,.12);
+  --card-bg:     rgba(13,27,42,.04);
+  --input-bg:    rgba(13,27,42,.06);
+  --white:       #0D1B2A;
+  --muted:       rgba(13,27,42,.5);
+  --parchment:   #0D1B2A;
+}
+
+/* ── RESET ──────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:var(--font-body)}
+body{background:var(--navy);color:var(--white);font-size:14px;line-height:1.5}
+button{cursor:pointer;font-family:inherit;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+
+/* ── LAYOUT ─────────────────────────────────────────────── */
+#app{
+  max-width: 430px;
+  margin: 0 auto;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--navy);
+}
+#top-bar{
+  height: var(--top-h);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 10px;
+  background: var(--navy-mid);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  z-index: 10;
+}
+#tab-content{
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(var(--nav-h) + 8px);
+}
+#bottom-nav{
+  height: var(--nav-h);
+  flex-shrink: 0;
+  display: flex;
+  background: var(--navy-mid);
+  border-top: 1px solid var(--border);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+/* ── TOP BAR ────────────────────────────────────────────── */
+.logo-mark{
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--teal), var(--teal-light));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-disp);
+  font-weight: 700; font-size: 15px;
+  color: var(--white);
+  letter-spacing: -.5px;
+  flex-shrink: 0;
+}
+.wordmark{font-family:var(--font-disp);font-weight:700;font-size:18px;letter-spacing:.5px;flex:1}
+.wordmark span{font-size:10px;font-weight:400;opacity:.5;display:block;letter-spacing:1px;font-family:var(--font-body);margin-top:-2px}
+#member-chip{
+  display: none;
+  align-items: center;
+  gap: 5px;
+  background: var(--teal);
+  padding: 3px 10px 3px 6px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+}
+#member-chip.show{display:flex}
+#member-chip .dot{width:6px;height:6px;background:#5fffb0;border-radius:50%}
+.icon-btn{
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  font-size: 14px;
+  transition: background .15s;
+}
+.icon-btn:hover{background:var(--input-bg)}
+
+/* ── BOTTOM NAV ─────────────────────────────────────────── */
+.nav-tab{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .3px;
+  color: var(--muted);
+  transition: color .2s;
+  position: relative;
+}
+.nav-tab .nav-icon{font-size: 20px;transition:transform .2s}
+.nav-tab.active{color: var(--teal-light)}
+.nav-tab.active .nav-icon{transform:scale(1.1)}
+.nav-tab.active::after{
+  content:'';
+  position:absolute; top:0; left:20%; right:20%; height:2px;
+  background: var(--teal-light);
+  border-radius: 0 0 3px 3px;
+}
+/* Alert tab pulse */
+.alert-pulse{
+  position:relative;
+}
+.alert-pulse::before{
+  content:'';
+  position:absolute; top:-2px; right:-4px;
+  width:6px;height:6px;
+  background:var(--red);
+  border-radius:50%;
+  animation:nav-pulse 2.5s ease-in-out infinite;
+}
+@keyframes nav-pulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.5;transform:scale(1.4)}
+}
+
+/* ── AUTH OVERLAY ───────────────────────────────────────── */
+#auth-overlay{
+  position:absolute;inset:0;z-index:100;
+  background:rgba(10,18,28,.95);
+  backdrop-filter:blur(12px);
+  display:flex;flex-direction:column;
+  overflow-y:auto;
+}
+.demo-banner{
+  background:linear-gradient(90deg,var(--teal),var(--teal-light));
+  padding:8px 16px;
+  font-size:11px;font-weight:600;letter-spacing:.5px;
+  text-align:center;
+  text-transform:uppercase;
+}
+.auth-hero{
+  padding:32px 24px 20px;
+  text-align:center;
+}
+.auth-logo{
+  width:56px;height:56px;
+  background:linear-gradient(135deg,var(--teal),var(--teal-light));
+  border-radius:16px;margin:0 auto 16px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-disp);font-weight:700;font-size:26px;
+}
+.auth-appname{
+  font-family:var(--font-disp);font-size:28px;font-weight:700;
+  letter-spacing:2px;
+}
+.auth-tagline{
+  font-size:12px;color:var(--muted);margin-top:4px;
+  letter-spacing:.8px;text-transform:uppercase;
+}
+.auth-tabs{
+  display:flex;margin:0 24px;
+  background:var(--navy-light);
+  border-radius:var(--radius);
+  padding:4px;
+}
+.auth-tab-btn{
+  flex:1;padding:8px;border-radius:var(--radius-sm);
+  font-size:13px;font-weight:600;
+  color:var(--muted);transition:all .2s;
+}
+.auth-tab-btn.active{background:var(--teal);color:var(--white)}
+.auth-form{padding:20px 24px;display:none;flex-direction:column;gap:12px}
+.auth-form.active{display:flex}
+.field-label{font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+.field-wrap{display:flex;flex-direction:column}
+.field-input{
+  background:var(--input-bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:10px 14px;
+  font-size:14px;color:var(--white);
+  outline:none;
+  transition:border-color .2s;
+}
+.field-input::placeholder{color:var(--muted)}
+.field-input:focus{border-color:var(--teal)}
+.auth-error{
+  background:rgba(192,57,43,.12);
+  border:1px solid rgba(192,57,43,.3);
+  border-radius:var(--radius-sm);
+  padding:8px 12px;
+  font-size:12px;color:#ff7c7c;
+  display:none;
+}
+.auth-error.show{display:block}
+.btn-primary{
+  background:linear-gradient(135deg,var(--teal),var(--teal-light));
+  color:var(--white);padding:12px;border-radius:var(--radius);
+  font-size:14px;font-weight:700;letter-spacing:.5px;
+  font-family:var(--font-disp);
+  transition:opacity .2s,transform .1s;
+  text-transform:uppercase;
+}
+.btn-primary:hover{opacity:.9}
+.btn-primary:active{transform:scale(.98)}
+.guest-link{
+  text-align:center;font-size:12px;color:var(--muted);
+  padding-bottom:32px;
+}
+.guest-link a{color:var(--teal-light);font-weight:600}
+
+/* ── PANEL SYSTEM ───────────────────────────────────────── */
+.tab-panel{display:none;min-height:100%}
+.tab-panel.active{display:block}
+
+/* ── SHARED COMPONENTS ──────────────────────────────────── */
+.section-pad{padding:0 16px}
+.chip{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 10px;border-radius:99px;
+  font-size:11px;font-weight:600;letter-spacing:.3px;
+  background:var(--card-bg);border:1px solid var(--border);
+}
+.chip.teal{background:rgba(26,122,110,.2);border-color:rgba(26,122,110,.4);color:var(--teal-light)}
+.chip.red{background:rgba(192,57,43,.15);border-color:rgba(192,57,43,.3);color:#ff7070}
+.chip.gold{background:rgba(212,168,67,.15);border-color:rgba(212,168,67,.3);color:var(--gold)}
+
+/* ── TAB 1: RIGHTS ──────────────────────────────────────── */
+.hero-strip{
+  background:linear-gradient(135deg,var(--navy-mid) 0%,var(--navy-light) 100%);
+  border-bottom:1px solid var(--border);
+  padding:24px 16px 20px;
+  position:relative;overflow:hidden;
+}
+.hero-strip::before{
+  content:'';position:absolute;top:-40px;right:-30px;
+  width:200px;height:200px;
+  background:radial-gradient(circle,rgba(26,122,110,.15) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-eyebrow{
+  font-size:10px;font-weight:600;letter-spacing:2px;
+  color:var(--teal-light);text-transform:uppercase;margin-bottom:6px;
+}
+.hero-heading{
+  font-family:var(--font-disp);font-size:26px;font-weight:700;
+  line-height:1.1;margin-bottom:8px;
+}
+.hero-sub{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6}
+.hero-tags{display:flex;gap:6px;flex-wrap:wrap}
+
+.age-chapter-wrap{padding:16px}
+.age-section-label{
+  font-size:10px;font-weight:600;letter-spacing:1.5px;
+  color:var(--muted);text-transform:uppercase;margin-bottom:10px;
+}
+/* Constitutional spine */
+.age-spine{
+  position:relative;
+  padding-left:16px;
+}
+.age-spine::before{
+  content:'';position:absolute;left:5px;top:8px;bottom:8px;
+  width:2px;background:linear-gradient(to bottom,var(--teal),var(--teal-light),var(--gold));
+  border-radius:1px;opacity:.4;
+}
+.age-pill{
+  position:relative;
+  margin-bottom:4px;
+}
+.age-pill::before{
+  content:'';position:absolute;left:-11px;top:50%;transform:translateY(-50%);
+  width:8px;height:8px;background:var(--navy-mid);
+  border:2px solid var(--teal);border-radius:50%;
+  z-index:1;
+  transition:background .2s;
+}
+.age-pill.open::before{background:var(--teal)}
+
+.age-pill-btn{
+  width:100%;display:flex;align-items:center;gap:10px;
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:10px 12px;
+  text-align:left;transition:all .2s;
+}
+.age-pill-btn:hover{background:var(--input-bg);border-color:rgba(26,122,110,.3)}
+.age-pill.open .age-pill-btn{
+  border-color:var(--teal);
+  background:rgba(26,122,110,.1);
+  border-radius:var(--radius) var(--radius) 0 0;
+}
+.pill-badge{
+  font-family:var(--font-disp);font-size:13px;font-weight:700;
+  color:var(--teal-light);min-width:34px;
+}
+.pill-label{font-size:13px;font-weight:500;flex:1}
+.pill-chevron{
+  font-size:10px;color:var(--muted);
+  transition:transform .25s;
+}
+.age-pill.open .pill-chevron{transform:rotate(180deg)}
+
+.age-pill-content{
+  display:none;overflow:hidden;
+  background:rgba(26,122,110,.05);
+  border:1px solid var(--teal);border-top:none;
+  border-radius:0 0 var(--radius) var(--radius);
+  padding:14px 14px 10px;
+}
+.age-pill.open .age-pill-content{display:block}
+.age-pill-text{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:12px}
+.pill-actions{display:flex;gap:8px}
+.btn-ghost{
+  flex:1;padding:7px;border-radius:var(--radius-sm);
+  border:1px solid var(--border);font-size:11px;font-weight:600;
+  letter-spacing:.3px;text-transform:uppercase;
+  transition:all .15s;
+}
+.btn-ghost:hover{background:var(--input-bg)}
+.btn-ghost.teal{border-color:rgba(26,122,110,.4);color:var(--teal-light)}
+
+/* Legal Toolkit */
+.toolkit-section{padding:16px}
+.toolkit-heading{
+  font-family:var(--font-disp);font-size:16px;font-weight:700;
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.toolkit-heading::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+.toolkit-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+}
+.toolkit-card{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px 12px;
+  cursor:pointer;transition:all .2s;
+}
+.toolkit-card:hover{background:var(--input-bg);border-color:rgba(26,122,110,.3);transform:translateY(-1px)}
+.tc-icon{font-size:22px;margin-bottom:6px}
+.tc-name{font-size:13px;font-weight:600;margin-bottom:2px}
+.tc-desc{font-size:10px;color:var(--muted);line-height:1.4}
+
+/* ── TAB 2: ALERT ───────────────────────────────────────── */
+.alert-pad{padding:16px;display:flex;flex-direction:column;gap:12px}
+.guest-banner{
+  background:linear-gradient(135deg,rgba(212,168,67,.1),rgba(212,168,67,.05));
+  border:1px solid rgba(212,168,67,.3);
+  border-radius:var(--radius);padding:12px 14px;
+  display:flex;align-items:center;gap:10px;
+  font-size:12px;
+}
+.guest-banner .gb-icon{font-size:20px}
+.guest-banner-text{flex:1;color:var(--muted)}
+.guest-banner-text strong{color:var(--gold);display:block;font-size:13px;margin-bottom:2px}
+.btn-sign-in{
+  background:var(--gold);color:var(--navy);
+  padding:6px 12px;border-radius:var(--radius-sm);
+  font-size:11px;font-weight:700;letter-spacing:.3px;
+  flex-shrink:0;
+}
+.toggle-group{
+  display:flex;background:var(--navy-light);border-radius:var(--radius);padding:4px;
+}
+.toggle-btn{
+  flex:1;padding:7px;border-radius:var(--radius-sm);
+  font-size:12px;font-weight:600;color:var(--muted);
+  transition:all .2s;
+}
+.toggle-btn.active{background:var(--teal);color:var(--white)}
+.private-badge{
+  background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.25);
+  border-radius:var(--radius-sm);padding:8px 12px;
+  font-size:11px;color:#ff9090;
+  display:flex;align-items:center;gap:6px;
+  display:none;
+}
+.private-badge.show{display:flex}
+.input-chips{display:flex;gap:6px}
+.input-chip{
+  flex:1;padding:7px 6px;border-radius:var(--radius-sm);
+  border:1px solid var(--border);background:var(--card-bg);
+  font-size:11px;font-weight:600;color:var(--muted);
+  transition:all .2s;text-align:center;
+}
+.input-chip.active{border-color:var(--teal);color:var(--teal-light);background:rgba(26,122,110,.1)}
+
+.record-zone{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  padding:20px 0 12px;
+}
+.record-btn{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(135deg,var(--red),#e84c3d);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;
+  box-shadow:0 0 0 0 var(--red-glow);
+  transition:transform .15s;
+  position:relative;
+}
+.record-btn.recording{
+  animation:rec-pulse 1.5s ease-in-out infinite;
+}
+.record-btn.recording::after{
+  content:'';position:absolute;inset:-8px;border-radius:50%;
+  border:2px solid rgba(192,57,43,.4);animation:rec-ring 1.5s ease-out infinite;
+}
+@keyframes rec-pulse{
+  0%,100%{box-shadow:0 0 0 0 var(--red-glow)}
+  50%{box-shadow:0 0 0 16px rgba(192,57,43,0)}
+}
+@keyframes rec-ring{
+  0%{transform:scale(1);opacity:1}
+  100%{transform:scale(1.5);opacity:0}
+}
+.record-status{font-size:12px;color:var(--muted);text-align:center}
+.record-status.active-rec{color:var(--red);font-weight:600}
+
+.transcript-area{
+  background:var(--input-bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:12px;
+  min-height:80px;font-size:12px;line-height:1.7;color:var(--muted);
+}
+.red-flags-section{display:flex;flex-direction:column;gap:8px}
+.rf-label{
+  font-size:10px;font-weight:600;letter-spacing:1.5px;
+  color:var(--muted);text-transform:uppercase;
+}
+.rf-card{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:12px;
+  border-left:3px solid var(--red);
+}
+.rf-card.yellow{border-left-color:var(--gold)}
+.rf-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.sev-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0}
+.sev-dot.yellow{background:var(--gold)}
+.rf-phrase{font-size:13px;font-weight:600;flex:1}
+.rf-right{font-size:10px;color:var(--muted);margin-bottom:8px}
+.btn-more{
+  font-size:11px;font-weight:600;color:var(--teal-light);
+  padding:5px 10px;border-radius:var(--radius-sm);
+  border:1px solid rgba(26,122,110,.3);
+}
+
+/* ── TAB 3: ASK AI ──────────────────────────────────────── */
+.chat-outer{
+  display:flex;flex-direction:column;
+  height:calc(100vh - var(--top-h) - var(--nav-h));
+}
+.chat-mode-bar{padding:12px 16px;border-bottom:1px solid var(--border)}
+.private-chat-badge{
+  margin:0 16px 8px;
+  background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.2);
+  border-radius:var(--radius-sm);padding:7px 12px;
+  font-size:11px;color:#ff9090;display:none;align-items:center;gap:6px;
+}
+.private-chat-badge.show{display:flex}
+.quick-chips{
+  display:flex;gap:6px;padding:0 16px 12px;
+  overflow-x:auto;scrollbar-width:none;
+}
+.quick-chips::-webkit-scrollbar{display:none}
+.quick-chip{
+  flex-shrink:0;padding:7px 12px;border-radius:99px;
+  border:1px solid var(--border);background:var(--card-bg);
+  font-size:12px;font-weight:500;color:var(--muted);
+  transition:all .2s;white-space:nowrap;
+}
+.quick-chip:hover{border-color:var(--teal);color:var(--teal-light)}
+.chat-messages{
+  flex:1;overflow-y:auto;padding:12px 16px;
+  display:flex;flex-direction:column;gap:12px;
+  -webkit-overflow-scrolling:touch;
+}
+.chat-empty{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;
+  padding:40px 16px;opacity:.5;text-align:center;
+}
+.chat-empty .ce-icon{font-size:40px;margin-bottom:4px}
+.chat-empty .ce-text{font-size:13px;color:var(--muted);line-height:1.6}
+
+.msg-bubble{
+  max-width:85%;display:flex;flex-direction:column;gap:4px;
+}
+.msg-bubble.user{align-self:flex-end;align-items:flex-end}
+.msg-bubble.ai{align-self:flex-start;align-items:flex-start}
+.msg-sender{font-size:10px;font-weight:600;letter-spacing:.5px;color:var(--teal-light);text-transform:uppercase}
+.msg-text{
+  padding:10px 13px;border-radius:var(--radius);
+  font-size:13px;line-height:1.6;
+}
+.msg-bubble.user .msg-text{
+  background:linear-gradient(135deg,var(--teal),var(--teal-light));
+  color:var(--white);border-radius:var(--radius) var(--radius) 2px var(--radius);
+}
+.msg-bubble.ai .msg-text{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:var(--radius) var(--radius) var(--radius) 2px;
+}
+.typing-indicator{
+  display:flex;gap:4px;align-items:center;
+  padding:10px 14px;
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:var(--radius) var(--radius) var(--radius) 2px;
+  align-self:flex-start;
+  display:none;
+}
+.typing-indicator.show{display:flex}
+.typing-dot{
+  width:6px;height:6px;background:var(--muted);border-radius:50%;
+  animation:bounce-dot .8s ease-in-out infinite;
+}
+.typing-dot:nth-child(2){animation-delay:.15s}
+.typing-dot:nth-child(3){animation-delay:.3s}
+@keyframes bounce-dot{
+  0%,80%,100%{transform:translateY(0)}
+  40%{transform:translateY(-5px)}
+}
+.chat-input-bar{
+  display:flex;gap:8px;padding:10px 16px 12px;
+  border-top:1px solid var(--border);
+  background:var(--navy-mid);
+}
+.chat-input{
+  flex:1;background:var(--input-bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:9px 14px;
+  font-size:13px;resize:none;outline:none;
+  transition:border-color .2s;
+  max-height:80px;overflow-y:auto;
+}
+.chat-input:focus{border-color:var(--teal)}
+.send-btn{
+  width:40px;height:40px;border-radius:var(--radius-sm);
+  background:linear-gradient(135deg,var(--teal),var(--teal-light));
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+  transition:opacity .2s,transform .1s;
+  align-self:flex-end;
+}
+.send-btn:hover{opacity:.9}
+.send-btn:active{transform:scale(.95)}
+
+/* ── TAB 4: MORE ────────────────────────────────────────── */
+.more-container{position:relative;overflow:hidden}
+.more-menu{padding:16px}
+.more-menu-item{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 12px;border-radius:var(--radius);
+  background:var(--card-bg);border:1px solid var(--border);
+  margin-bottom:6px;
+  transition:all .2s;
+  cursor:pointer;
+}
+.more-menu-item:hover{background:var(--input-bg);border-color:rgba(26,122,110,.2)}
+.mmi-icon{font-size:20px;min-width:28px;text-align:center}
+.mmi-label{font-size:14px;font-weight:500;flex:1}
+.mmi-arrow{font-size:12px;color:var(--muted)}
+
+/* Sub-panels */
+.sub-panel{
+  position:absolute;inset:0;
+  background:var(--navy);
+  transform:translateX(100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;
+  padding-bottom:20px;
+}
+.sub-panel.active{transform:translateX(0)}
+.sub-back{
+  display:flex;align-items:center;gap:8px;
+  padding:14px 16px;border-bottom:1px solid var(--border);
+  font-weight:600;font-size:14px;
+  cursor:pointer;
+}
+.sub-back:hover .sb-arrow{transform:translateX(-3px)}
+.sb-arrow{transition:transform .2s;font-size:18px}
+.sub-content{padding:16px}
+
+/* News */
+.filter-pills{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+.filter-pills::-webkit-scrollbar{display:none}
+.filter-pill{
+  flex-shrink:0;padding:5px 12px;border-radius:99px;
+  border:1px solid var(--border);font-size:11px;font-weight:600;
+  color:var(--muted);transition:all .2s;
+}
+.filter-pill.active{background:var(--teal);border-color:var(--teal);color:var(--white)}
+.news-card{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px;margin-top:10px;
+}
+.nc-tag{
+  display:inline-block;padding:2px 8px;border-radius:99px;
+  background:rgba(26,122,110,.2);border:1px solid rgba(26,122,110,.3);
+  font-size:10px;font-weight:600;color:var(--teal-light);
+  letter-spacing:.3px;margin-bottom:8px;
+}
+.nc-title{font-size:13px;font-weight:600;line-height:1.4;margin-bottom:6px}
+.nc-meta{font-size:11px;color:var(--muted)}
+
+/* Court tracker */
+.timeline{margin-top:16px;position:relative;padding-left:20px}
+.timeline::before{
+  content:'';position:absolute;left:6px;top:4px;bottom:4px;
+  width:2px;background:var(--border);border-radius:1px;
+}
+.tl-item{position:relative;margin-bottom:16px}
+.tl-item::before{
+  content:'';position:absolute;left:-17px;top:4px;
+  width:10px;height:10px;border-radius:50%;
+  background:var(--navy-mid);border:2px solid var(--teal);
+}
+.tl-date{font-size:10px;color:var(--muted);margin-bottom:2px}
+.tl-event{font-size:13px;font-weight:500}
+
+/* Downloads */
+.lang-list{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.lang-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:var(--radius-sm);
+  background:var(--card-bg);border:1px solid var(--border);
+}
+.lang-name{flex:1;font-size:13px;font-weight:500}
+.lang-badge{font-size:10px;color:var(--teal-light);font-weight:600}
+.btn-dl{
+  padding:5px 10px;border-radius:var(--radius-sm);
+  border:1px solid var(--border);font-size:11px;font-weight:600;
+  color:var(--muted);transition:all .2s;
+}
+.btn-dl:hover{border-color:var(--teal);color:var(--teal-light)}
+.coming-section-label{
+  font-size:10px;font-weight:600;letter-spacing:1.5px;
+  color:var(--muted);text-transform:uppercase;margin-bottom:10px;
+}
+.coming-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:var(--radius-sm);
+  background:rgba(212,168,67,.05);border:1px solid rgba(212,168,67,.15);
+  margin-bottom:6px;
+}
+.coming-label{flex:1;font-size:13px;font-weight:500}
+.btn-notify{
+  padding:5px 10px;border-radius:var(--radius-sm);
+  background:rgba(212,168,67,.15);border:1px solid rgba(212,168,67,.3);
+  font-size:10px;font-weight:600;color:var(--gold);
+}
+
+/* Credits */
+.credits-logo{text-align:center;padding:24px 0 16px}
+.credits-version{font-size:11px;color:var(--muted);margin-top:4px}
+.sources-list{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.source-item{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;border-radius:var(--radius-sm);
+  background:var(--card-bg);border:1px solid var(--border);
+  font-size:12px;
+}
+.source-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0}
+.btn-github{
+  width:100%;padding:12px;border-radius:var(--radius);
+  border:1px solid var(--border);background:var(--card-bg);
+  font-size:13px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .2s;
+}
+.btn-github:hover{border-color:var(--teal);background:rgba(26,122,110,.1)}
+
+/* Network stats */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.stat-card{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px 12px;
+}
+.stat-value{font-family:var(--font-disp);font-size:22px;font-weight:700;color:var(--teal-light)}
+.stat-label{font-size:10px;color:var(--muted);margin-top:2px;letter-spacing:.3px}
+
+/* Idea form */
+.idea-textarea{
+  width:100%;background:var(--input-bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:12px 14px;
+  font-size:13px;color:var(--white);resize:none;outline:none;
+  height:100px;margin-bottom:10px;
+  transition:border-color .2s;
+}
+.idea-textarea:focus{border-color:var(--teal)}
+.idea-select{
+  width:100%;background:var(--input-bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:10px 14px;
+  font-size:13px;color:var(--white);outline:none;
+  margin-bottom:14px;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(250,250,248,.4)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;background-size:12px;
+}
+option{background:var(--navy-mid)}
+
+/* Storage */
+.storage-bar-wrap{margin-bottom:20px}
+.storage-bar-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px}
+.storage-bar-label span:first-child{color:var(--muted)}
+.storage-bar-track{
+  height:6px;background:var(--navy-light);border-radius:99px;overflow:hidden;
+}
+.storage-bar-fill{
+  height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-light));
+  border-radius:99px;width:34%;
+}
+.storage-files{display:flex;flex-direction:column;gap:6px}
+.storage-file{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:var(--radius-sm);
+  background:var(--card-bg);border:1px solid var(--border);
+  font-size:12px;
+}
+.sf-icon{font-size:16px}
+.sf-name{flex:1;color:var(--white)}
+.sf-size{color:var(--muted)}
+
+/* ── LANGUAGE MODAL ──────────────────────────────────────── */
+#lang-modal{
+  position:absolute;inset:0;z-index:200;
+  background:rgba(10,18,28,.75);backdrop-filter:blur(8px);
+  display:none;align-items:flex-end;
+}
+#lang-modal.open{display:flex}
+.lang-sheet{
+  width:100%;background:var(--navy-mid);
+  border-radius:24px 24px 0 0;
+  padding:20px 16px 40px;
+  transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+#lang-modal.open .lang-sheet{transform:translateY(0)}
+.lang-sheet-header{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;
+}
+.lang-sheet-title{font-family:var(--font-disp);font-size:18px;font-weight:700}
+.close-btn{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--card-bg);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;
+}
+.lang-sub{font-size:12px;color:var(--muted);margin-bottom:16px}
+.lang-tile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lang-tile{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:12px 8px;
+  text-align:center;cursor:pointer;transition:all .2s;
+}
+.lang-tile:hover,.lang-tile.selected{background:rgba(26,122,110,.15);border-color:var(--teal)}
+.lang-tile-name{font-size:13px;font-weight:600;margin-bottom:2px}
+.lang-tile-native{font-size:11px;color:var(--muted)}
+.built-in-badge{
+  display:inline-block;font-size:9px;font-weight:600;
+  background:var(--teal);color:var(--white);
+  padding:1px 5px;border-radius:3px;margin-top:3px;
+}
+
+/* ── TOAST ───────────────────────────────────────────────── */
+#toast{
+  position:absolute;bottom:calc(var(--nav-h) + 12px);left:16px;right:16px;
+  background:var(--navy-light);border:1px solid var(--border);
+  border-radius:var(--radius);padding:10px 14px;
+  font-size:13px;font-weight:500;
+  box-shadow:0 8px 24px rgba(0,0,0,.3);
+  transform:translateY(20px);opacity:0;
+  transition:all .25s;pointer-events:none;
+  display:flex;align-items:center;gap:8px;
+  z-index:300;
+}
+#toast.show{transform:translateY(0);opacity:1}
+
+/* ── DATA MY-DATA ────────────────────────────────────────── */
+.mydata-card{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px;margin-bottom:8px;
+}
+.mydata-row{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);
+}
+.mydata-row:last-child{border-bottom:none}
+.mydata-key{color:var(--muted)}
+.mydata-val{font-weight:600;font-size:13px}
+.danger-btn{
+  width:100%;padding:12px;border-radius:var(--radius);
+  border:1px solid rgba(192,57,43,.3);background:rgba(192,57,43,.08);
+  color:#ff7070;font-size:13px;font-weight:600;
+  transition:all .2s;
+}
+.danger-btn:hover{background:rgba(192,57,43,.15)}
+</style>
+</head>
+<body>
+<div id="app">
+
+<div id="demo-watermark" style="position:fixed;inset:0;pointer-events:none;z-index:99999;display:flex;align-items:center;justify-content:center;opacity:.5;color:#fff;font-size:clamp(12px,2vw,20px);font-weight:700;transform:rotate(-35deg);text-align:center;padding:20px">DEMO BUILD ONLY • Sample AI responses, legal examples, court data, recordings and news are not real and not legal advice</div>
+  <!-- ── AUTH OVERLAY ─────────────────────────────────────── -->
+  <div id="auth-overlay">
+   
+    <div class="auth-hero">
+      <div class="auth-logo">न</div>
+      <div class="auth-appname">NAAGRIK</div>
+      <div class="auth-tagline">Your Rights. Anywhere. Always.</div>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab-btn active" onclick="switchAuthTab('login')">Log In</button>
+      <button class="auth-tab-btn" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <!-- LOGIN -->
+    <div id="form-login" class="auth-form active">
+      <div class="field-wrap">
+        <div class="field-label">Email</div>
+        <input class="field-input" type="email" id="login-email" placeholder="you@example.com">
+      </div>
+      <div class="field-wrap">
+        <div class="field-label">Password</div>
+        <input class="field-input" type="password" id="login-pass" placeholder="••••••••">
+      </div>
+      <div class="auth-error" id="login-error">Please enter a valid email and password.</div>
+      <button class="btn-primary" onclick="handleLogin()">Log In</button>
+      <div class="guest-link"><a href="#" onclick="continueAsGuest(event)">Continue as Guest →</a></div>
+    </div>
+    <!-- SIGN UP -->
+    <div id="form-signup" class="auth-form">
+      <div class="field-wrap">
+        <div class="field-label">Full Name</div>
+        <input class="field-input" type="text" id="su-name" placeholder="Aarav Kumar">
+      </div>
+      <div class="field-wrap">
+        <div class="field-label">Email</div>
+        <input class="field-input" type="email" id="su-email" placeholder="you@example.com">
+      </div>
+      <div class="field-wrap">
+        <div class="field-label">Password</div>
+        <input class="field-input" type="password" id="su-pass" placeholder="Min. 8 characters">
+      </div>
+      <div class="field-wrap">
+        <div class="field-label">Confirm Password</div>
+        <input class="field-input" type="password" id="su-confirm" placeholder="Repeat password">
+      </div>
+      <div class="auth-error" id="signup-error">Passwords do not match.</div>
+      <button class="btn-primary" onclick="handleSignup()">Create Account</button>
+      <div class="guest-link"><a href="#" onclick="continueAsGuest(event)">Continue as Guest →</a></div>
+    </div>
+  </div>
+
+  <!-- ── TOP BAR ──────────────────────────────────────────── -->
+  <div id="top-bar">
+    <div class="logo-mark">न</div>
+    <div class="wordmark">NAAGRIK<span>Know Your Rights</span></div>
+    <div style="background:#C0392B;color:#fff;padding:3px 6px;border-radius:6px;font-size:10px;font-weight:700;line-height:1.1;max-width:170px;text-align:center;margin-right:8px">
+DEMO BUILD ONLY • Sample AI responses, legal examples, court data, recordings and news are not real and not legal advice
+</div>
+    <div id="member-chip"><div class="dot"></div><span id="member-name">Member</span></div>
+    <button class="icon-btn" onclick="openLangModal()" title="Language">🌐</button>
+    <button class="icon-btn" onclick="toggleTheme()" id="theme-btn" title="Theme">🌙</button>
+  </div>
+
+  <!-- ── TAB CONTENT ──────────────────────────────────────── -->
+  <div id="tab-content">
+
+    <!-- ─── TAB 1: RIGHTS ──────────────────────────────── -->
+    <div id="tab-rights" class="tab-panel active">
+      <div class="hero-strip">
+        <div class="hero-eyebrow">Indian Constitution</div>
+        <div class="hero-heading">Know What<br>Belongs to You</div>
+        <div class="hero-sub">Fundamental rights, legal remedies, and age-specific protections — in plain language.</div>
+        <div class="hero-tags">
+          <span class="chip teal">🛡️ Fundamental Rights</span>
+          <span class="chip gold">⚖️ Legal Remedies</span>
+          <span class="chip red">🔒 POCSO Protection</span>
+        </div>
+      </div>
+      <!-- Age chapters -->
+      <div class="age-chapter-wrap">
+        <div class="age-section-label">Rights by Age Group</div>
+        <div class="age-spine" id="age-spine"></div>
+      </div>
+      <!-- Legal Toolkit -->
+      <div class="toolkit-section">
+        <div class="toolkit-heading">Legal Toolkit</div>
+        <div class="toolkit-grid" id="toolkit-grid"></div>
+      </div>
+    </div>
+
+    <!-- ─── TAB 2: ALERT ───────────────────────────────── -->
+    <div id="tab-alert" class="tab-panel">
+      <div class="alert-pad">
+        <div class="guest-banner" id="alert-guest-banner">
+          <div class="gb-icon">🔐</div>
+          <div class="guest-banner-text">
+            <strong>Sign in to save recordings</strong>
+            Private mode and encrypted storage available for members.
+          </div>
+          <button class="btn-sign-in" onclick="openAuth()">Sign In</button>
+        </div>
+        <div class="toggle-group">
+          <button class="toggle-btn active" onclick="setAlertMode('standard',this)">Standard</button>
+          <button class="toggle-btn" onclick="setAlertMode('private',this)">Private</button>
+        </div>
+        <div class="private-badge" id="private-badge">
+          🔒 Private mode — no data leaves this device
+        </div>
+        <div class="input-chips">
+          <button class="input-chip active" onclick="setInputType(this)">🎙️ Audio</button>
+          <button class="input-chip" onclick="setInputType(this)">📹 Audio+Video</button>
+          <button class="input-chip" onclick="setInputType(this)">⌨️ Type</button>
+        </div>
+        <div class="record-zone">
+          <button class="record-btn" id="rec-btn" onclick="toggleRecording()">🎙️</button>
+          <div class="record-status" id="rec-status">Tap to begin recording</div>
+        </div>
+        <div class="transcript-area" id="transcript">
+          Live transcript will appear here once recording starts…
+        </div>
+        <div class="red-flags-section">
+          <div class="rf-label">🚩 Live Red Flags</div>
+          <div id="rf-cards">
+            <div class="rf-card">
+              <div class="rf-top"><div class="sev-dot"></div><div class="rf-phrase">"You have no right to call a lawyer"</div></div>
+              <div class="rf-right">Violates: Article 22 — Right to consult legal practitioner</div>
+              <button class="btn-more" onclick="showToast('📋 Full details loaded')">More →</button>
+            </div>
+            <div class="rf-card yellow">
+              <div class="rf-top"><div class="sev-dot yellow"></div><div class="rf-phrase">"Sign this or face arrest"</div></div>
+              <div class="rf-right">Violates: Article 20 — Protection against self-incrimination</div>
+              <button class="btn-more" onclick="showToast('📋 Full details loaded')">More →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── TAB 3: ASK AI ──────────────────────────────── -->
+    <div id="tab-ai" class="tab-panel">
+      <div class="chat-outer">
+        <div class="chat-mode-bar">
+          <div class="toggle-group">
+            <button class="toggle-btn active" onclick="setChatMode('my',this)">My Chat</button>
+            <button class="toggle-btn" onclick="setChatMode('private',this)">Private Chat</button>
+          </div>
+        </div>
+        <div class="private-chat-badge" id="private-chat-badge">
+          🔒 Private — conversation not stored
+        </div>
+        <div class="quick-chips" id="quick-chips">
+          <button class="quick-chip" onclick="sendQuick(this)">🚔 Police stops</button>
+          <button class="quick-chip" onclick="sendQuick(this)">📄 File RTI</button>
+          <button class="quick-chip" onclick="sendQuick(this)">💰 Unpaid wages</button>
+          <button class="quick-chip" onclick="sendQuick(this)">📞 Scam calls</button>
+          <button class="quick-chip" onclick="sendQuick(this)">📜 Article 21</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-empty" id="chat-empty">
+            <div class="ce-icon">⚖️</div>
+            <div class="ce-text">Ask any question about your rights,<br>legal procedures, or get help with a situation.</div>
+          </div>
+        </div>
+        <div class="typing-indicator" id="typing-ind">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+        <div class="chat-input-bar">
+          <textarea class="chat-input" id="chat-input" placeholder="Ask about your rights…" rows="1"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"
+            oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+          <button class="send-btn" onclick="sendMessage()">➤</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── TAB 4: MORE ─────────────────────────────────── -->
+    <div id="tab-more" class="tab-panel">
+      <div class="more-container" id="more-container">
+        <div class="more-menu" id="more-main">
+          <div class="more-menu-item" onclick="openSubPanel('news')">
+            <div class="mmi-icon">📰</div><div class="mmi-label">News & Updates</div><div class="mmi-arrow">›</div>
+          </div>
+          <div class="more-menu-item" onclick="openSubPanel('court')">
+            <div class="mmi-icon">🏛️</div><div class="mmi-label">Court Tracker</div><div class="mmi-arrow">›</div>
+          </div>
+          <div class="more-menu-item" onclick="openSubPanel('storage')">
+            <div class="mmi-icon">💾</div><div class="mmi-label">My Storage</div><div class="mmi-arrow">›</div>
+          </div>
+          <div class="more-menu-item" onclick="openSubPanel('network')">
+            <div class="mmi-icon">📶</div><div class="mmi-label">Network & Data</div><div class="mmi-arrow">›</div>
+          </div>
+          <div class="more-menu-item" onclick="openSubPanel('mydata')">
+            <div class="mmi-icon">🗂️</div><div class="mmi-label">My Data</div><div class="mmi-arrow">›</div>
+          </div>
+          <div class="more-menu-item" onclick="openSubPanel('idea')">
+            <div class="mmi-icon">💡</div><div class="mmi-label">Submit an Idea</div><div class="mmi-arrow">›</div>
+          </div>
+          <div class="more-menu-item" onclick="openSubPanel('downloads')">
+            <div class="mmi-icon">⬇️</div><div class="mmi-label">Downloads & Features</div><div class="mmi-arrow">›</div>
+          </div>
+          <div class="more-menu-item" onclick="openSubPanel('credits')">
+            <div class="mmi-icon">ℹ️</div><div class="mmi-label">Credits</div><div class="mmi-arrow">›</div>
+          </div>
+          <div class="more-menu-item" id="auth-menu-item" onclick="handleAuthMenu()">
+            <div class="mmi-icon" id="auth-menu-icon">👤</div>
+            <div class="mmi-label" id="auth-menu-label">Log In / Sign Up</div>
+            <div class="mmi-arrow">›</div>
+          </div>
+        </div>
+        <div class="guest-banner" style="margin-bottom:12px;">
+          <div class="gb-icon">⚠️</div>
+          <div class="guest-banner-text">
+         
+        </div>
+        <!-- Sub-panels -->
+        <div class="sub-panel" id="sp-news">
+          <div class="sub-back" onclick="closeSubPanel('news')"><span class="sb-arrow">‹</span> News & Updates</div>
+          <div class="sub-content">
+
+            <div class="filter-pills">
+              <button class="filter-pill active" onclick="filterNews(this)">All</button>
+              <button class="filter-pill" onclick="filterNews(this)">Supreme Court</button>
+              <button class="filter-pill" onclick="filterNews(this)">High Court</button>
+              <button class="filter-pill" onclick="filterNews(this)">Consumer</button>
+              <button class="filter-pill" onclick="filterNews(this)">Labour</button>
+            </div>
+            <div class="news-card">
+              <div class="nc-tag">Supreme Court</div>
+              <div class="nc-title">Right to privacy recognized as fundamental right under Article 21 (reference item)</div>
+              <div class="nc-meta">Sample Date · Demo case 1</div>
+            </div>
+            <div class="news-card">
+              <div class="nc-tag">High Court</div>
+              <div class="nc-title">Delhi HC: Employer must provide written reason for termination</div>
+              <div class="nc-meta">Sample Date · LPA 211/2025</div>
+            </div>
+            <div class="news-card">
+              <div class="nc-tag">Consumer</div>
+              <div class="nc-title">NCDRC orders refund for defective product after 3-year delay</div>
+              <div class="nc-meta">Sample daet · CC 1034/2024</div>
+            </div>
+            <div class="news-card">
+              <div class="nc-tag">Labour</div>
+              <div class="nc-title">New wage code: Minimum wage linked to CPI from Q3 2026</div>
+              <div class="nc-meta">Sample date · Gazette Notification</div>
+            </div>
+            <div class="news-card">
+              <div class="nc-tag">Supreme Court</div>
+              <div class="nc-title">Bail under UAPA: SC clarifies stringent test not automatic bar</div>
+              <div class="nc-meta">Sample date · SLP(Crl) 5981/2025</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-panel" id="sp-court">
+          <div class="sub-back" onclick="closeSubPanel('court')"><span class="sb-arrow">‹</span> Court Tracker</div>
+          <div class="sub-content">
+            <div class="field-wrap" style="margin-bottom:10px">
+              <div class="field-label">Case Number</div>
+              <input class="field-input" id="ct-case" placeholder="e.g.Demo case 2">
+            </div>
+            <div class="field-wrap" style="margin-bottom:14px">
+              <div class="field-label">Court Name</div>
+              <input class="field-input" id="ct-court" placeholder="e.g. Delhi High Court">
+            </div>
+            <button class="btn-primary" onclick="trackCase()">Track Case</button>
+            <div class="timeline" id="case-timeline" style="display:none;margin-top:20px">
+              <div class="tl-item">
+                <div class="tl-date">22 May 2026</div>
+                <div class="tl-event">Next hearing scheduled</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-date">4 Apr 2026</div>
+                <div class="tl-event">Reply filed by respondent</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-date">18 Feb 2026</div>
+                <div class="tl-event">Petition admitted, notice issued</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-date">3 Jan 2026</div>
+                <div class="tl-event">Case filed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-panel" id="sp-storage">
+          <div class="sub-back" onclick="closeSubPanel('storage')"><span class="sb-arrow">‹</span> My Storage</div>
+          <div class="sub-content">
+            <div class="storage-bar-wrap">
+              <div class="storage-bar-label">
+                <span>Used storage</span><span>34 MB / 100 MB</span>
+              </div>
+              <div class="storage-bar-track"><div class="storage-bar-fill"></div></div>
+            </div>
+            <div class="storage-files">
+              <div class="storage-file"><div class="sf-icon">🎙️</div><div class="sf-name">Recording_Jun12.m4a</div><div class="sf-size">2.4 MB</div></div>
+              <div class="storage-file"><div class="sf-icon">📄</div><div class="sf-name">RTI_Draft_2026.pdf</div><div class="sf-size">128 KB</div></div>
+              <div class="storage-file"><div class="sf-icon">🎙️</div><div class="sf-name">Recording_May28.m4a</div><div class="sf-size">5.1 MB</div></div>
+              <div class="storage-file"><div class="sf-icon">📝</div><div class="sf-name">ChatExport_Article21.txt</div><div class="sf-size">42 KB</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-panel" id="sp-network">
+          <div class="sub-back" onclick="closeSubPanel('network')"><span class="sb-arrow">‹</span> Network & Data</div>
+          <div class="sub-content">
+            <div class="stat-grid">
+              <div class="stat-card"><div class="stat-value">Wi-Fi</div><div class="stat-label">Connection Type</div></div>
+              <div class="stat-card"><div class="stat-value">82 Mbps</div><div class="stat-label">Download Speed</div></div>
+              <div class="stat-card"><div class="stat-value">12 MB</div><div class="stat-label">Session Data</div></div>
+              <div class="stat-card"><div class="stat-value">340 MB</div><div class="stat-label">Monthly Data</div></div>
+            </div>
+            <button class="btn-primary" onclick="showToast('🔄 Network stats refreshed')">Refresh</button>
+          </div>
+        </div>
+
+        <div class="sub-panel" id="sp-mydata">
+          <div class="sub-back" onclick="closeSubPanel('mydata')"><span class="sb-arrow">‹</span> My Data</div>
+          <div class="sub-content">
+            <div class="mydata-card">
+              <div class="mydata-row"><div class="mydata-key">Account</div><div class="mydata-val" id="mydata-email">Guest</div></div>
+              <div class="mydata-row"><div class="mydata-key">Member since</div><div class="mydata-val">—</div></div>
+              <div class="mydata-row"><div class="mydata-key">Recordings</div><div class="mydata-val">3</div></div>
+              <div class="mydata-row"><div class="mydata-key">AI conversations</div><div class="mydata-val">7</div></div>
+            </div>
+            <button class="danger-btn" onclick="showToast('🗑️ All data cleared')">Delete All My Data</button>
+          </div>
+        </div>
+
+        <div class="sub-panel" id="sp-idea">
+          <div class="sub-back" onclick="closeSubPanel('idea')"><span class="sb-arrow">‹</span> Submit an Idea</div>
+          <div class="sub-content">
+            <div class="field-label" style="margin-bottom:6px">Your Idea</div>
+            <textarea class="idea-textarea" placeholder="Describe your idea or feature request…"></textarea>
+            <div class="field-label" style="margin-bottom:6px">Category</div>
+            <select class="idea-select">
+              <option>Rights & Information</option>
+              <option>Alert & Recording</option>
+              <option>AI Assistant</option>
+              <option>Language Support</option>
+              <option>Other</option>
+            </select>
+            <button class="btn-primary" onclick="showToast('✅ Idea submitted anonymously. Thank you!')">Submit Anonymously</button>
+          </div>
+        </div>
+
+        <div class="sub-panel" id="sp-downloads">
+          <div class="sub-back" onclick="closeSubPanel('downloads')"><span class="sb-arrow">‹</span> Downloads & Features</div>
+          <div class="sub-content">
+            <div class="age-section-label" style="margin-bottom:10px">Language Packs</div>
+            <div style="background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.25);padding:12px;border-radius:12px;margin-bottom:12px;font-size:12px;">⚠️ Demo Build Notice: News items, court timelines, legal examples, AI responses, recordings, storage data, and other sample content are for UI demonstration purposes only and should not be treated as legal advice or real case information.</div>
+            <div class="lang-list" id="lang-list"></div>
+            <div class="coming-section-label">Coming Soon</div>
+            <div class="coming-item">
+              <div class="coming-label">🆘 SOS Mode</div>
+              <button class="btn-notify" onclick="showToast('🔔 You will be notified')">Notify me</button>
+            </div>
+            <div class="coming-item">
+              <div class="coming-label">📝 RTI Auto-Generator</div>
+              <button class="btn-notify" onclick="showToast('🔔 You will be notified')">Notify me</button>
+            </div>
+            <div class="coming-item">
+              <div class="coming-label">📴 Offline Full Mode</div>
+              <button class="btn-notify" onclick="showToast('🔔 You will be notified')">Notify me</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-panel" id="sp-credits">
+          <div class="sub-back" onclick="closeSubPanel('credits')"><span class="sb-arrow">‹</span> Credits</div>
+          <div class="sub-content">
+            <div class="credits-logo">
+              <div class="auth-logo" style="margin-bottom:8px">न</div>
+              <div class="auth-appname">NAAGRIK</div>
+              
+            </div>
+            <div class="age-section-label" style="margin-bottom:10px">Sources</div>
+            <div class="sources-list">
+              <div style="background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.25);padding:12px;border-radius:12px;margin-bottom:12px;font-size:12px;">
+                ⚠️ Demo Build Notice: News items, court timelines, legal examples, AI responses, recordings, storage data, and other sample content are for UI demonstration purposes only and should not be treated as legal advice or real case information.
+              </div>
+              <div class="source-item"><div class="source-dot"></div>Constitution of India, 1950</div>
+              <div class="source-item"><div class="source-dot"></div>National Commission for Protection of Child Rights</div>
+              <div class="source-item"><div class="source-dot"></div>Ministry of Law & Justice, India</div>
+              <div class="source-item"><div class="source-dot"></div>eCourts Services API</div>
+              <div class="source-item"><div class="source-dot"></div>Central Information Commission (RTI)</div>
+            </div>
+            <button class="btn-github" onclick="showToast('🔗 GitHub link copied')">
+              <span>🐙</span> View on GitHub
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-content -->
+
+  <!-- ── BOTTOM NAV ──────────────────────────────────────── -->
+  <div id="bottom-nav">
+    <button class="nav-tab active" onclick="switchTab('rights',this)">
+      <span class="nav-icon">📖</span><span>Rights</span>
+    </button>
+    <button class="nav-tab" onclick="switchTab('alert',this)">
+      <span class="nav-icon alert-pulse">🚨</span><span>Alert</span>
+    </button>
+    <button class="nav-tab" onclick="switchTab('ai',this)">
+      <span class="nav-icon">🤖</span><span>Ask AI</span>
+    </button>
+    <button class="nav-tab" onclick="switchTab('more',this)">
+      <span class="nav-icon">⋯</span><span>More</span>
+    </button>
+  </div>
+
+  <!-- ── LANGUAGE MODAL ────────────────────────────────────── -->
+  <div id="lang-modal">
+    <div class="lang-sheet">
+      <div class="lang-sheet-header">
+        <div class="lang-sheet-title">Choose Language</div>
+        <button class="close-btn" onclick="closeLangModal()">✕</button>
+      </div>
+      <div class="lang-sub">Select your preferred language for content</div>
+      <div class="lang-tile-grid" id="lang-tile-grid"></div>
+    </div>
+  </div>
+
+  <!-- ── TOAST ──────────────────────────────────────────────── -->
+  <div id="toast">
+    <span id="toast-icon">✅</span>
+    <span id="toast-msg">Done</span>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+/* ─── STATE ─────────────────────────────────────────────── */
+let isLoggedIn = false;
+let currentUser = null;
+let isRecording = false;
+let recInterval = null;
+let chatMessages = [];
+let quickChipsHidden = false;
+let currentTheme = 'dark';
+
+/* ─── DATA ──────────────────────────────────────────────── */
+const ageChapters = [
+  { range: '5–6', label: 'Early Childhood', text: 'Children aged 5–6 have the right to free and compulsory education under the Right to Education Act (2009). They are protected from child labour and any form of exploitation. Parents or guardians hold their legal rights on their behalf.' },
+  { range: '7–10', label: 'Children', text: 'Children must be enrolled in school. Corporal punishment is prohibited in all schools. POCSO Act 2012 provides special protection against sexual offences. No child can be employed in hazardous work.' },
+  { range: '11–13', label: 'Pre-teen', text: 'Pre-teens have the right to privacy and dignity. Cyberbullying is addressable under the IT Act. Schools cannot arbitrarily expel students. Any testimony given to police must be recorded in presence of a guardian.' },
+  { range: '14–15', label: 'Early Teen', text: 'Children aged 14–15 cannot be employed in hazardous occupations. Teens cannot be held in adult jails. The Juvenile Justice Act provides special procedures for children. The Right to Education Act generally guarantees free and compulsory education for children aged 6–14.' },
+  { range: '16–17', label: 'Teen', text: 'Certain driving licences may be available subject to legal requirements. Under the Juvenile Justice Act, children aged 16–18 accused of certain heinous offences may undergo a preliminary assessment before transfer to a Children\'s Court. Voting rights begin at 18.' },
+  { range: '18+', label: 'Adult Rights', text: 'Full Fundamental Rights under Part III of the Constitution: Right to Equality (Art. 14–18), Freedom (Art. 19–22), Against Exploitation (Art. 23–24), Religion (Art. 25–28), Cultural & Educational (Art. 29–30), and Constitutional Remedies (Art. 32).' },
+];
+
+const toolkit = [
+  { icon:'📋', name:'RTI', desc:'Right to Information Act — file requests with govt offices' },
+  { icon:'📱', name:'e-FIR', desc:'File a First Information Report online' },
+  { icon:'🛒', name:'Consumer', desc:'Consumer Protection Act rights & complaint process' },
+  { icon:'👷', name:'Labour', desc:'Minimum wage, unpaid dues, workplace rights' },
+  { icon:'🔒', name:'POCSO', desc:'Protection of Children from Sexual Offences Act' },
+  { icon:'🏠', name:'Dom. Violence', desc:'Protection of Women from Domestic Violence Act' },
+  { icon:'🏡', name:'Property', desc:'Inheritance, tenant rights, and property disputes' },
+  { icon:'💻', name:'Cyber Crime', desc:'Report online fraud, harassment & data breaches' },
+  { icon:'📈', name:'Escalation', desc:'How to escalate when authorities don\'t respond' },
+  { icon:'⚖️', name:'Writs', desc:'Habeas Corpus, Mandamus, Certiorari & more' },
+];
+
+const languages = [
+  { name:'English', native:'English', builtin:true },
+  { name:'Hindi', native:'हिन्दी', builtin:true },
+  { name:'Tamil', native:'தமிழ்', builtin:false },
+  { name:'Telugu', native:'తెలుగు', builtin:false },
+  { name:'Kannada', native:'ಕನ್ನಡ', builtin:false },
+  { name:'Malayalam', native:'മലയാളം', builtin:false },
+  { name:'Bengali', native:'বাংলা', builtin:false },
+  { name:'Marathi', native:'मराठी', builtin:false },
+  { name:'Gujarati', native:'ગુજરાતી', builtin:false },
+  { name:'Punjabi', native:'ਪੰਜਾਬੀ', builtin:false },
+  { name:'Odia', native:'ଓଡ଼ିଆ', builtin:false },
+  { name:'Assamese', native:'অসমীয়া', builtin:false },
+  { name:'Urdu', native:'اردو', builtin:false },
+];
+
+const downloadLangs = [
+  'Hindi','Tamil','Telugu','Kannada','Malayalam',
+  'Bengali','Marathi','Gujarati','Punjabi','Odia','Assamese'
+];
+
+const aiResponses = {
+  'Police stops': `**If police stop you**, remember these rights:\n\n• **Article 22** — You cannot be detained for more than 24 hours without being produced before a magistrate.\n• You have the right to know the reason for arrest.\n• You can refuse to answer questions that may incriminate you (Art. 20).\n• You have the right to inform a family member or lawyer.\n\nRemain calm, do not resist, and ask politely: *"Am I under arrest, or am I free to go?"*`,
+  'File RTI': `**How to file an RTI (Right to Information) request:**\n\n1. Identify the Public Information Officer (PIO) of the concerned department.\n2. Write a clear, specific request stating the information you need.\n3. Pay ₹10 (fee waived for BPL card holders).\n4. Submit in person, by post, or via **rtionline.gov.in**.\n\n**Timeline:** The PIO must respond within **30 days** (48 hours if life/liberty is at stake).\n\nIf denied, you can appeal to the First Appellate Authority within 30 days.`,
+  'Unpaid wages': `**If your employer hasn't paid your wages:**\n\n• • Wage payment timelines depend on applicable labour laws and employment conditions..\n• File a complaint with the **Labour Commissioner** in your district.\n• You can also approach the **Labour Court** for recovery.\n\nWorkers may seek remedies through labour authorities or appropriate legal forums depending on the nature of the dispute.. Keep all salary slips, bank statements, and appointment letters as evidence.`,
+  'Scam calls': `**If you receive a scam call:**\n\n• **Do not share OTPs, PINs, or Aadhaar numbers** — no govt or bank official asks for these.\n• Report on **Sanchar Saathi portal** (sancharsaathi.gov.in) — Chakshu option.\n• File a cybercrime complaint at **cybercrime.gov.in** or call **1930**.\n• For financial fraud, also report to your bank immediately.\n\nThe Telecom Regulatory Authority of India (TRAI) can block persistent spam numbers based on your report.`,
+  'Article 21': `**Article 21 — Right to Life and Personal Liberty**\n\n*"No person shall be deprived of his life or personal liberty except according to procedure established by law."*\n\nThe Supreme Court has expanded this to include:\n• Right to **privacy** (K.S. Puttaswamy case, 2017)\n• • Judicially recognized rights related to education, health, livelihood, dignity, and privacy \n• Right to **dignity** and a **clean environment**\n• Right to **speedy trial**\n\nAny violation can be challenged via a writ petition under **Article 32** (Supreme Court) or **Article 226** (High Court).`,
+};
+
+/* ─── INIT ──────────────────────────────────────────────── */
+function init() {
+  renderAgeChapters();
+  renderToolkit();
+  renderLangTiles();
+  renderDownloadLangs();
+}
+
+function renderAgeChapters() {
+  const spine = document.getElementById('age-spine');
+  ageChapters.forEach((ch, i) => {
+    const pill = document.createElement('div');
+    pill.className = 'age-pill';
+    pill.id = `ap-${i}`;
+    pill.innerHTML = `
+      <button class="age-pill-btn" onclick="toggleAgePill(${i})">
+        <span class="pill-badge">${ch.range}</span>
+        <span class="pill-label">${ch.label}</span>
+        <span class="pill-chevron">▼</span>
+      </button>
+      <div class="age-pill-content">
+        <div class="age-pill-text">${ch.text}</div>
+        <div class="pill-actions">
+          <button class="btn-ghost teal" onclick="showToast('📚 Related cases loaded')">Related Cases</button>
+          <button class="btn-ghost" onclick="showToast('⬇️ PDF downloaded')">⬇ Download</button>
+        </div>
+      </div>`;
+    spine.appendChild(pill);
+  });
+}
+
+function renderToolkit() {
+  const grid = document.getElementById('toolkit-grid');
+  toolkit.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'toolkit-card';
+    card.innerHTML = `<div class="tc-icon">${t.icon}</div><div class="tc-name">${t.name}</div><div class="tc-desc">${t.desc}</div>`;
+    card.onclick = () => showToast(`📖 Opening ${t.name} guide…`);
+    grid.appendChild(card);
+  });
+}
+
+function renderLangTiles() {
+  const grid = document.getElementById('lang-tile-grid');
+  languages.forEach((l, i) => {
+    const tile = document.createElement('div');
+    tile.className = 'lang-tile' + (i === 0 ? ' selected' : '');
+    tile.innerHTML = `<div class="lang-tile-name">${l.name}</div>
+      <div class="lang-tile-native">${l.native}</div>
+      ${l.builtin ? '<div><span class="built-in-badge">built-in</span></div>' : ''}`;
+    tile.onclick = () => {
+      document.querySelectorAll('.lang-tile').forEach(t => t.classList.remove('selected'));
+      tile.classList.add('selected');
+      if (!l.builtin) showToast(`⬇️ Downloading ${l.name} pack…`);
+      else showToast(`✅ ${l.name} selected`);
+    };
+    grid.appendChild(tile);
+  });
+}
+
+function renderDownloadLangs() {
+  const list = document.getElementById('lang-list');
+  downloadLangs.forEach(l => {
+    const item = document.createElement('div');
+    item.className = 'lang-item';
+    item.innerHTML = `<div class="lang-name">${l}</div><div class="lang-badge">~4 MB</div><button class="btn-dl" onclick="showToast('⬇️ ${l} pack downloading…')">Download</button>`;
+    list.appendChild(item);
+  });
+}
+
+/* ─── AUTH ──────────────────────────────────────────────── */
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+  document.querySelectorAll('.auth-tab-btn').forEach(b => {
+    if ((tab==='login'&&b.textContent==='Log In')||(tab==='signup'&&b.textContent==='Sign Up'))
+      b.classList.add('active');
+  });
+  document.getElementById(`form-${tab}`).classList.add('active');
+}
+
+function handleLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  const err = document.getElementById('login-error');
+  if (!email || !pass || !email.includes('@')) {
+    err.classList.add('show'); return;
+  }
+  err.classList.remove('show');
+  loginUser(email.split('@')[0]);
+}
+
+function handleSignup() {
+  const name = document.getElementById('su-name').value.trim();
+  const email = document.getElementById('su-email').value.trim();
+  const pass = document.getElementById('su-pass').value;
+  const confirm = document.getElementById('su-confirm').value;
+  const err = document.getElementById('signup-error');
+  if (!name || !email || pass.length < 8) {
+    err.textContent = 'Please fill all fields (min. 8 char password).';
+    err.classList.add('show'); return;
+  }
+  if (pass !== confirm) {
+    err.textContent = 'Passwords do not match.';
+    err.classList.add('show'); return;
+  }
+  err.classList.remove('show');
+  loginUser(name.split(' ')[0]);
+}
+
+function loginUser(name) {
+  isLoggedIn = true;
+  currentUser = name;
+  document.getElementById('auth-overlay').style.display = 'none';
+  document.getElementById('member-chip').classList.add('show');
+  document.getElementById('member-name').textContent = name;
+  document.getElementById('auth-menu-icon').textContent = '🚪';
+  document.getElementById('auth-menu-label').textContent = 'Log Out';
+  document.getElementById('alert-guest-banner').style.display = 'none';
+  document.getElementById('mydata-email').textContent = name + '@demo.com';
+  showToast(`👋 Welcome, ${name}!`);
+}
+
+function continueAsGuest(e) {
+  e.preventDefault();
+  document.getElementById('auth-overlay').style.display = 'none';
+  showToast('Browsing as Guest — some features limited');
+}
+
+function openAuth() {
+  document.getElementById('auth-overlay').style.display = 'flex';
+}
+
+function handleAuthMenu() {
+  if (isLoggedIn) {
+    isLoggedIn = false;
+    currentUser = null;
+    document.getElementById('member-chip').classList.remove('show');
+    document.getElementById('auth-menu-icon').textContent = '👤';
+    document.getElementById('auth-menu-label').textContent = 'Log In / Sign Up';
+    document.getElementById('alert-guest-banner').style.display = 'flex';
+    showToast('👋 Logged out');
+  } else {
+    openAuth();
+  }
+}
+
+/* ─── TABS ──────────────────────────────────────────────── */
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  btn.classList.add('active');
+  closeAllSubPanels();
+}
+
+/* ─── AGE PILLS ─────────────────────────────────────────── */
+function toggleAgePill(i) {
+  const pill = document.getElementById(`ap-${i}`);
+  const isOpen = pill.classList.contains('open');
+  document.querySelectorAll('.age-pill').forEach(p => p.classList.remove('open'));
+  if (!isOpen) pill.classList.add('open');
+}
+
+/* ─── ALERT ─────────────────────────────────────────────── */
+function setAlertMode(mode, btn) {
+  document.querySelectorAll('.toggle-group')[0].querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('private-badge').classList.toggle('show', mode === 'private');
+}
+
+function setInputType(btn) {
+  document.querySelectorAll('.input-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+const transcriptLines = [
+  "Officer: Step out of the vehicle.",
+  "You: Am I under arrest?",
+  "Officer: You have no right to call a lawyer right now.",
+  "You: Sir, I believe I have the right to legal counsel.",
+  "Officer: Sign this document or I'll have to take you in.",
+];
+
+function toggleRecording() {
+  isRecording = !isRecording;
+  const btn = document.getElementById('rec-btn');
+  const status = document.getElementById('rec-status');
+  const transcript = document.getElementById('transcript');
+  if (isRecording) {
+    btn.classList.add('recording');
+    btn.textContent = '⏹';
+    status.textContent = '● Recording in progress…';
+    status.className = 'record-status active-rec';
+    transcript.textContent = '';
+    let lineIdx = 0;
+    recInterval = setInterval(() => {
+      if (lineIdx < transcriptLines.length) {
+        transcript.textContent += (lineIdx > 0 ? '\n' : '') + transcriptLines[lineIdx];
+        lineIdx++;
+      }
+    }, 1800);
+  } else {
+    btn.classList.remove('recording');
+    btn.textContent = '🎙️';
+    status.textContent = 'Recording stopped';
+    status.className = 'record-status';
+    clearInterval(recInterval);
+    showToast('🔴 Recording saved');
+  }
+}
+
+/* ─── AI CHAT ───────────────────────────────────────────── */
+function setChatMode(mode, btn) {
+  document.querySelectorAll('#tab-ai .toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('private-chat-badge').classList.toggle('show', mode === 'private');
+}
+
+function sendQuick(btn) {
+  const text = btn.textContent.replace(/^[^\w]+/, '').trim();
+  const key = Object.keys(aiResponses).find(k => text.toLowerCase().includes(k.toLowerCase().split(' ')[0]));
+  sendUserMessage(key || text, aiResponses[key] || null);
+}
+
+function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  input.style.height = 'auto';
+  sendUserMessage(text, null);
+}
+
+function sendUserMessage(text, presetReply) {
+  // Hide empty state and quick chips
+  document.getElementById('chat-empty').style.display = 'none';
+  if (!quickChipsHidden) {
+    document.getElementById('quick-chips').style.display = 'none';
+    quickChipsHidden = true;
+  }
+  addMsg('user', text);
+  showTyping();
+  const delay = 1000 + Math.random() * 800;
+  setTimeout(() => {
+    hideTyping();
+    const reply = presetReply || generateReply(text);
+    addMsg('ai', reply);
+  }, delay);
+}
+
+function generateReply(text) {
+  const t = text.toLowerCase();
+  if (t.includes('right') || t.includes('article')) return 'Under the Indian Constitution, you have several fundamental rights guaranteed under Part III. Could you tell me more specifically which right or situation you\'re asking about? I can give you a precise answer.';
+  if (t.includes('police') || t.includes('arrest')) return 'If you\'re facing a situation involving police, remember: you have the right to know the grounds of arrest, to be produced before a magistrate within 24 hours, and to consult a lawyer. Stay calm and do not resist. Ask: "Am I under arrest?"';
+  if (t.includes('wage') || t.includes('salary') || t.includes('pay')) return 'Under the Payment of Wages Act 1936, unpaid wages can be recovered through a complaint to the Labour Commissioner. Keep all pay slips and bank records as evidence.';
+  if (t.includes('rti')) return 'The Right to Information Act 2005 allows any citizen to request information from any public authority. File online at rtionline.gov.in. There is a ₹10 fee (waived for BPL). Response is due within 30 days.';
+  return 'That\'s an important question. Based on Indian constitutional law and relevant statutes, I can help you understand your rights in this situation. Could you share a few more details about the specific circumstances?';
+}
+
+function addMsg(role, text) {
+  const container = document.getElementById('chat-messages');
+  const bubble = document.createElement('div');
+  bubble.className = `msg-bubble ${role}`;
+  const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>').replace(/•/g, '•');
+  bubble.innerHTML = role === 'ai'
+    ? `<div class="msg-sender">NAAGRIK AI</div><div class="msg-text">${formattedText}</div>`
+    : `<div class="msg-text">${formattedText}</div>`;
+  container.appendChild(bubble);
+  container.scrollTop = container.scrollHeight;
+  chatMessages.push({ role, text });
+}
+
+function showTyping() {
+  const ind = document.getElementById('typing-ind');
+  ind.classList.add('show');
+  const container = document.getElementById('chat-messages');
+  container.appendChild(ind);
+  container.scrollTop = container.scrollHeight;
+}
+
+function hideTyping() {
+  document.getElementById('typing-ind').classList.remove('show');
+}
+
+/* ─── MORE / SUB-PANELS ─────────────────────────────────── */
+function openSubPanel(name) {
+  closeAllSubPanels();
+  const sp = document.getElementById(`sp-${name}`);
+  if (sp) {
+    sp.classList.add('active');
+    document.getElementById('more-container').style.height = document.getElementById('tab-content').offsetHeight + 'px';
+  }
+}
+
+function closeSubPanel(name) {
+  document.getElementById(`sp-${name}`).classList.remove('active');
+}
+
+function closeAllSubPanels() {
+  document.querySelectorAll('.sub-panel').forEach(sp => sp.classList.remove('active'));
+}
+
+function trackCase() {
+  const caseNum = document.getElementById('ct-case').value.trim();
+  const court = document.getElementById('ct-court').value.trim();
+  if (!caseNum || !court) { showToast('⚠️ Please enter both fields'); return; }
+  document.getElementById('case-timeline').style.display = 'block';
+  showToast('🔍 Case timeline loaded');
+}
+
+function filterNews(btn) {
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  showToast(`Showing: ${btn.textContent} news`);
+}
+
+/* ─── LANGUAGE MODAL ────────────────────────────────────── */
+function openLangModal() {
+  const modal = document.getElementById('lang-modal');
+  modal.classList.add('open');
+  setTimeout(() => {}, 10);
+}
+
+function closeLangModal() {
+  document.getElementById('lang-modal').classList.remove('open');
+}
+
+document.getElementById('lang-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeLangModal();
+});
+
+/* ─── THEME ─────────────────────────────────────────────── */
+function toggleTheme() {
+  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', currentTheme);
+  document.getElementById('theme-btn').textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+}
+
+/* ─── TOAST ─────────────────────────────────────────────── */
+let toastTimeout;
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  const parts = msg.match(/^(\S+)\s+(.*)/);
+  if (parts) {
+    document.getElementById('toast-icon').textContent = parts[1];
+    document.getElementById('toast-msg').textContent = parts[2];
+  } else {
+    document.getElementById('toast-icon').textContent = '✅';
+    document.getElementById('toast-msg').textContent = msg;
+  }
+  toast.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+/* ─── GO ─────────────────────────────────────────────────── */
+init();
+</script>
+</body>
+</html>
