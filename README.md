@@ -1,3 +1,14 @@
+NAAGRIK (Demo Prototype)
+
+This repository contains a user-interface demonstration only.
+
+All AI responses, legal examples, court timelines, recordings,
+storage data, news items, and sample content are fictional and
+generated solely for demonstration purposes.
+
+This project does not provide legal advice and should not be relied
+upon for legal, professional, or governmental purposes.
+
 # NAAGRIK
 
 AUTH OVERLAY
