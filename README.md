@@ -330,114 +330,114 @@ TAB 1 — RIGHTS
     ├── RTI  
     ├── e-FIR  
     ├── Consumer  
-    ├── Labour
-    ├── POCSO
-    ├── Dom. Violence
-    ├── Property
-    ├── Cyber Crime
-    ├── Escalation
-    └── Writs
+    ├── Labour  
+    ├── POCSO  
+    ├── Dom. Violence  
+    ├── Property  
+    ├── Cyber Crime  
+    ├── Escalation  
+    └── Writs  
 
-TAB 2 — ALERT
-├── Guest banner + Sign In button
-├── Mode toggle — Standard | Private
-├── Private mode warning badge
-├── Input type chips — Audio | Audio+Video | Type
-├── Record / Stop button (pulses red when active)
-├── Recording status text
-├── Live transcript area
-└── Live Red Flags section
-    └── Red flag cards (stackable)
-        ├── Severity dot (red / yellow)
-        ├── Flagged phrase
-        ├── Violated right
-        └── More button
+TAB 2 — ALERT  
+├── Guest banner + Sign In button  
+├── Mode toggle — Standard | Private  
+├── Private mode warning badge  
+├── Input type chips — Audio | Audio+Video | Type  
+├── Record / Stop button (pulses red when active)  
+├── Recording status text  
+├── Live transcript area  
+└── Live Red Flags section  
+    └── Red flag cards (stackable)  
+        ├── Severity dot (red / yellow)  
+        ├── Flagged phrase  
+        ├── Violated right  
+        └── More button  
 
-TAB 3 — ASK AI
-├── Mode toggle — My Chat | Private Chat
-├── Private chat warning badge
-├── Quick-start chips (5 chips, hidden after first message)
-│   ├── Police stops
-│   ├── File RTI
-│   ├── Unpaid wages
-│   ├── Scam calls
-│   └── Article 21
-└── Chat area
-    ├── Empty state (icon + prompt text)
-    ├── User message bubbles (right-aligned)
-    ├── AI message bubbles (left-aligned)
-    │   ├── NAAGRIK AI sender label
-    │   └── Formatted response text
-    ├── Typing indicator (3 bouncing dots)
-    ├── Text input
-    └── Send button
+TAB 3 — ASK AI  
+├── Mode toggle — My Chat | Private Chat  
+├── Private chat warning badge  
+├── Quick-start chips (5 chips, hidden after first message)  
+│   ├── Police stops  
+│   ├── File RTI  
+│   ├── Unpaid wages  
+│   ├── Scam calls  
+│   └── Article 21  
+└── Chat area  
+    ├── Empty state (icon + prompt text)  
+    ├── User message bubbles (right-aligned)  
+    ├── AI message bubbles (left-aligned)  
+    │   ├── NAAGRIK AI sender label  
+    │   └── Formatted response text  
+    ├── Typing indicator (3 bouncing dots)  
+    ├── Text input  
+    └── Send button  
 
-TAB 4 — MORE
-├── MAIN MENU (9 rows)
-│   ├── News & Updates →
-│   ├── Court Tracker →
-│   ├── My Storage →
-│   ├── Network & Data →
-│   ├── My Data →
-│   ├── Submit an Idea →
-│   ├── Downloads & Features →
-│   ├── Credits →
-│   └── Login / Sign Up → (or Log Out when member)
-│
-├── NEWS SUB-PANEL
-│   ├── Back button
-│   ├── Filter pills — All | Supreme Court | High Court | Consumer | Labour
-│   └── News cards (5 cards)
-│       ├── Court category tag
-│       ├── Judgment title
-│       └── Date + case number
-│
-├── COURT TRACKER SUB-PANEL
-│   ├── Back button
-│   ├── Case number input
-│   ├── Court name input
-│   ├── Track Case button
-│   └── Timeline (dots + dates + event text)
-│
-├── NETWORK & DATA SUB-PANEL
-│   ├── Back button
-│   ├── Connection type stat
-│   ├── Speed stat
-│   ├── Session data stat
-│   ├── Monthly data stat
-│   └── Refresh button
-│
-├── SUBMIT IDEA SUB-PANEL
-│   ├── Back button
-│   ├── Idea text area
-│   ├── Category drop down
-│   └── Submit Anonymously button
-│
-├── DOWNLOADS SUB-PANEL
-│   ├── Back button
-│   ├── Language packs list (11 packs)
-│   │   └── Download button per language
-│   └── Coming Soon section (3 items)
-│       ├── SOS Mode + Notify me
-│       ├── RTI Auto-Generator + Notify me
-│       └── Offline Full Mode + Notify me
-│
-└── CREDITS SUB-PANEL
-    ├── Back button
-    ├── Logo + version
-    ├── Sources list (5 items)
-    └── View on GitHub button
+TAB 4 — MORE  
+├── MAIN MENU (9 rows)  
+│   ├── News & Updates →  
+│   ├── Court Tracker →  
+│   ├── My Storage →  
+│   ├── Network & Data →  
+│   ├── My Data →  
+│   ├── Submit an Idea →  
+│   ├── Downloads & Features →  
+│   ├── Credits →  
+│   └── Login / Sign Up → (or Log Out when member)  
+│  
+├── NEWS SUB-PANEL  
+│   ├── Back button  
+│   ├── Filter pills — All | Supreme Court | High Court | Consumer | Labour  
+│   └── News cards (5 cards)  
+│       ├── Court category tag  
+│       ├── Judgment title  
+│       └── Date + case number  
+│  
+├── COURT TRACKER SUB-PANEL  
+│   ├── Back button  
+│   ├── Case number input  
+│   ├── Court name input  
+│   ├── Track Case button  
+│   └── Timeline (dots + dates + event text)  
+│  
+├── NETWORK & DATA SUB-PANEL  
+│   ├── Back button  
+│   ├── Connection type stat  
+│   ├── Speed stat  
+│   ├── Session data stat  
+│   ├── Monthly data stat  
+│   └── Refresh button  
+│  
+├── SUBMIT IDEA SUB-PANEL  
+│   ├── Back button  
+│   ├── Idea text area  
+│   ├── Category drop down  
+│   └── Submit Anonymously button  
+│  
+├── DOWNLOADS SUB-PANEL  
+│   ├── Back button  
+│   ├── Language packs list (11 packs)  
+│   │   └── Download button per language  
+│   └── Coming Soon section (3 items)  
+│       ├── SOS Mode + Notify me  
+│       ├── RTI Auto-Generator + Notify me  
+│       └── Offline Full Mode + Notify me  
+│  
+└── CREDITS SUB-PANEL  
+    ├── Back button  
+    ├── Logo + version  
+    ├── Sources list (5 items)  
+    └── View on GitHub button  
 
-BOTTOM NAV (fixed, 4 tabs)
-├── 📖 Rights
-├── 🚨 Alert
-├── 🤖 Ask AI
-└── ⋯ More
+BOTTOM NAV (fixed, 4 tabs)  
+├── 📖 Rights  
+├── 🚨 Alert  
+├── 🤖 Ask AI  
+└── ⋯ More  
 
-LANGUAGE MODAL (bottom sheet)
-├── Title + close button
-├── Subtitle
-└── 13 language tiles (3-col grid)
-    ├── English (built-in)
-    ├── Hindi (built-in)
-    └── 11 downloadable languages
+LANGUAGE MODAL (bottom sheet)  
+├── Title + close button  
+├── Subtitle  
+└── 13 language tiles (3-col grid)  
+    ├── English (built-in)  
+    ├── Hindi (built-in)  
+    └── 11 downloadable languages  
