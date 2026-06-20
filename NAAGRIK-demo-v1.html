@@ -10,11 +10,19 @@
 </head>
 <body>
 <div id="app">
-
-<div id="demo-watermark" style="position:fixed;inset:0;pointer-events:none;z-index:99999;display:flex;align-items:center;justify-content:center;opacity:.5;color:#fff;font-size:clamp(12px,2vw,20px);font-weight:700;transform:rotate(-35deg);text-align:center;padding:20px">DEMO BUILD ONLY • Sample AI responses, legal examples, court data, recordings and news are not real and not legal advice</div>
-  <!-- ── AUTH OVERLAY ─────────────────────────────────────── -->
-  <div id="auth-overlay">
-   
+  <!-- ── Demo Watermark Every Page ─────────────────────────────────────── -->
+  <div id="demo-watermark" >
+    DEMO BUILD ONLY • Sample AI responses, legal examples, court data, recordings and news are not real and not legal advice
+  </div>
+ 
+ <!-- ── AUTH OVERLAY ─────────────────────────────────────── -->
+    <div id="auth-overlay">
+      
+      <!-- Add this container for global controls -->
+      <div class="auth-controls">
+       <button class="icon-btn" onclick="openLangModal()">🌐</button>
+       <button class="icon-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
+      </div> 
     <div class="auth-hero">
       <div class="auth-logo">न</div>
       <div class="auth-appname">NAAGRIK</div>
@@ -66,9 +74,7 @@
   <div id="top-bar">
     <div class="logo-mark">न</div>
     <div class="wordmark">NAAGRIK<span>Know Your Rights</span></div>
-    <div style="background:#C0392B;color:#fff;padding:3px 6px;border-radius:6px;font-size:10px;font-weight:700;line-height:1.1;max-width:170px;text-align:center;margin-right:8px">
-DEMO BUILD ONLY • Sample AI responses, legal examples, court data, recordings and news are not real and not legal advice
-</div>
+    <div class="demo-banner-text">DEMO BUILD ONLY </div>
     <div id="member-chip"><div class="dot"></div><span id="member-name">Member</span></div>
     <button class="icon-btn" onclick="openLangModal()" title="Language">🌐</button>
     <button class="icon-btn" onclick="toggleTheme()" id="theme-btn" title="Theme">🌙</button>
@@ -152,6 +158,21 @@ DEMO BUILD ONLY • Sample AI responses, legal examples, court data, recordings 
     <!-- ─── TAB 3: ASK AI ──────────────────────────────── -->
     <div id="tab-ai" class="tab-panel">
       <div class="chat-outer">
+
+        <!-- Collapsible API Config -->
+        <details id="ai-config-panel">
+          <summary style="font-size:12px; font-weight:600; color:var(--teal-light); cursor:pointer;">⚙️ AI Configuration</summary>
+          <div style="padding-top:10px; display:flex; flex-direction:column; gap:10px;">
+            <input type="password" id="ai-api-key" class="field-input" placeholder="Paste API Key">
+            <select id="ai-provider" class="field-input" onchange="updateModelOptions()" style="padding: 10px; height: 40px;">
+              <option value="openrouter">OpenRouter</option>
+              <option value="groq">Groq</option>
+            </select>
+            <select id="ai-model" class="field-input" style="padding: 10px; height: 40px;"></select>
+            <button class="btn-primary" onclick="saveConfig()">Save Settings</button>
+          </div>
+        </details>
+
         <div class="chat-mode-bar">
           <div class="toggle-group">
             <button class="toggle-btn active" onclick="setChatMode('my',this)">My Chat</button>
@@ -331,18 +352,17 @@ DEMO BUILD ONLY • Sample AI responses, legal examples, court data, recordings 
           </div>
         </div>
 
-        <div class="sub-panel" id="sp-mydata">
+      <div class="sub-panel" id="sp-mydata">
           <div class="sub-back" onclick="closeSubPanel('mydata')"><span class="sb-arrow">‹</span> My Data</div>
           <div class="sub-content">
             <div class="mydata-card">
               <div class="mydata-row"><div class="mydata-key">Account</div><div class="mydata-val" id="mydata-email">Guest</div></div>
-              <div class="mydata-row"><div class="mydata-key">Member since</div><div class="mydata-val">—</div></div>
-              <div class="mydata-row"><div class="mydata-key">Recordings</div><div class="mydata-val">3</div></div>
-              <div class="mydata-row"><div class="mydata-key">AI conversations</div><div class="mydata-val">7</div></div>
+              <div class="mydata-row"><div class="mydata-key">API Key</div><div class="mydata-val" id="api-status">Not Set</div></div>
             </div>
-            <button class="danger-btn" onclick="showToast('🗑️ All data cleared')">Delete All My Data</button>
+            <button class="danger-btn" onclick="clearApiKey()">Clear API Key & Data</button>
           </div>
         </div>
+  
 
         <div class="sub-panel" id="sp-idea">
           <div class="sub-back" onclick="closeSubPanel('idea')"><span class="sb-arrow">‹</span> Submit an Idea</div>
@@ -439,7 +459,29 @@ DEMO BUILD ONLY • Sample AI responses, legal examples, court data, recordings 
       <div class="lang-tile-grid" id="lang-tile-grid"></div>
     </div>
   </div>
+</div>
+  <div id="tmpl-toolkit-card" class="toolkit-card">
+    <div class="tc-icon"></div>
+    <div class="tc-name"></div>
+    <div class="tc-desc"></div>
+  </div>
 
+  <div id="templates" style="display:none;">
+  <!-- Template for Age Chapters -->
+  <div id="tmpl-age-pill" class="age-pill">
+    <button class="age-pill-btn">
+      <span class="pill-badge"></span>
+      <span class="pill-label"></span>
+      <span class="pill-chevron">▼</span>
+    </button>
+    <div class="age-pill-content">
+      <div class="age-pill-text"></div>
+      <div class="pill-actions">
+        <button class="btn-ghost teal">Related Cases</button>
+        <button class="btn-ghost">Download</button>
+      </div>
+    </div>
+  </div>
   <!-- ── TOAST ──────────────────────────────────────────────── -->
   <div id="toast">
     <span id="toast-icon">✅</span>
