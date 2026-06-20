@@ -73,7 +73,8 @@ a{color:inherit;text-decoration:none}
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: calc(var(--nav-h) + 8px);
+  padding-bottom: calc(var(--nav-h) + 20px);
+  height: 100%;
 }
 #bottom-nav{
   height: var(--nav-h);
@@ -89,6 +90,19 @@ a{color:inherit;text-decoration:none}
 }
 
 /* ── TOP BAR ────────────────────────────────────────────── */
+.demo-banner-text {
+  background:var(--red);
+  color:#fff;
+  padding:3px 6px;
+  border-radius:6px;
+  font-size:10px;
+  font-weight:700;
+  line-height:1.1;
+  max-width:170px;
+  text-align:center;
+  margin-right:8px;
+}
+
 .logo-mark{
   width: 30px; height: 30px;
   background: linear-gradient(135deg, var(--teal), var(--teal-light));
@@ -169,11 +183,20 @@ a{color:inherit;text-decoration:none}
 /* ── AUTH OVERLAY ───────────────────────────────────────── */
 #auth-overlay{
   position:absolute;inset:0;z-index:100;
-  background:rgba(10,18,28,.95);
+  background:var(--navy);
   backdrop-filter:blur(12px);
   display:flex;flex-direction:column;
   overflow-y:auto;
 }
+.auth-controls {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 101;
+}
+
 .demo-banner{
   background:linear-gradient(90deg,var(--teal),var(--teal-light));
   padding:8px 16px;
@@ -181,6 +204,25 @@ a{color:inherit;text-decoration:none}
   text-align:center;
   text-transform:uppercase;
 }
+
+#demo-watermark {
+  position:fixed;
+  inset:0;
+  pointer-events:
+  none;
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:.5;color:var(--white);
+  font-size:clamp(12px,2vw,20px);
+  font-weight:700;
+  transform:rotate(-35deg);
+  text-align:center;
+  padding:20px;
+}
+
+
 .auth-hero{
   padding:32px 24px 20px;
   text-align:center;
@@ -255,6 +297,8 @@ a{color:inherit;text-decoration:none}
 /* ── PANEL SYSTEM ───────────────────────────────────────── */
 .tab-panel{display:none;min-height:100%}
 .tab-panel.active{display:block}
+
+
 
 /* ── SHARED COMPONENTS ──────────────────────────────────── */
 .section-pad{padding:0 16px}
@@ -353,6 +397,9 @@ a{color:inherit;text-decoration:none}
 .age-pill.open .age-pill-content{display:block}
 .age-pill-text{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:12px}
 .pill-actions{display:flex;gap:8px}
+#templates { display: none; }
+#tmpl-age-pill { display: none; }
+
 .btn-ghost{
   flex:1;padding:7px;border-radius:var(--radius-sm);
   border:1px solid var(--border);font-size:11px;font-weight:600;
@@ -586,7 +633,38 @@ a{color:inherit;text-decoration:none}
 .send-btn:active{transform:scale(.95)}
 
 /* ── TAB 4: MORE ────────────────────────────────────────── */
-.more-container{position:relative;overflow:hidden}
+.more-container{
+  position:relative;
+  min-height: 100%;}
+
+details[id^="ai-config"] {
+  margin: 10px 16px;
+  background: var(--navy-mid);
+  padding: 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+#ai-config-panel {
+  margin: 10px 16px;
+  background: var(--navy-mid);
+  padding: 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+#ai-config-panel summary {
+  font-size:12px; font-weight:600; color:var(--teal-light); cursor:pointer;
+}
+
+.ai-config-fields {
+  padding-top:10px; display:flex; flex-direction:column; gap:10px;
+}
+
+details[open] {
+  padding-bottom: 15px;
+}
+
 .more-menu{padding:16px}
 .more-menu-item{
   display:flex;align-items:center;gap:12px;
@@ -603,7 +681,7 @@ a{color:inherit;text-decoration:none}
 
 /* Sub-panels */
 .sub-panel{
-  position:absolute;inset:0;
+  position:absolute;top: 0; left: 0; right: 0; bottom: 0;;
   background:var(--navy);
   transform:translateX(100%);
   transition:transform .3s cubic-bezier(.4,0,.2,1);
