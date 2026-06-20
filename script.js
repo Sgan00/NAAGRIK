@@ -45,6 +45,8 @@ const languages = [
   { name:'Assamese', native:'অসমীয়া', builtin:false },
   { name:'Urdu', native:'اردو', builtin:false },
 ];
+let activeLanguages = ['English', 'Hindi'];
+let selectedLanguage = 'English'; // The current language in use
 
 const downloadLangs = [
   'Hindi','Tamil','Telugu','Kannada','Malayalam',
@@ -61,59 +63,119 @@ const aiResponses = {
 
 /* ─── INIT ──────────────────────────────────────────────── */
 function init() {
+  // Theme
+  const savedTheme = localStorage.getItem('naagrik-theme') || 'dark';
+  if (savedTheme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.getElementById('theme-btn').textContent = '☀️';
+  }
+
+  // 1. Load basic values
+  document.getElementById('ai-api-key').value = sessionStorage.getItem('ai-key') || '';
+  document.getElementById('ai-provider').value = localStorage.getItem('ai-provider') || 'openrouter';
+  
+  // 2. Populate models based on the provider
+  updateModelOptions(); 
+  
+  // 3. NOW set the saved model (it will exist because we called updateModelOptions above)
+  document.getElementById('ai-model').value = localStorage.getItem('ai-model') || '';
+
+  // 4. Status Check
+  if(localStorage.getItem('ai-key')) {
+    document.getElementById('api-status').textContent = 'Stored Securely';
+  }
+
   renderAgeChapters();
   renderToolkit();
   renderLangTiles();
   renderDownloadLangs();
 }
 
+// 2. Populate models based on the provider
+function updateModelOptions() {
+  const provider = document.getElementById('ai-provider').value;
+  const modelSelect = document.getElementById('ai-model');
+  modelSelect.innerHTML = ''; // Clear current
+  
+  const models = provider === 'groq' 
+    ? ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'mixtral-8x7b-32768']
+    : ['openai/gpt-4o-mini', 'anthropic/claude-3.5-haiku', 'google/gemini-2.0-flash-lite-preview'];
+
+  models.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m;
+    opt.textContent = m;
+    modelSelect.appendChild(opt);
+  });
+}
+
 function renderAgeChapters() {
   const spine = document.getElementById('age-spine');
+  const template = document.getElementById('tmpl-age-pill');
+
   ageChapters.forEach((ch, i) => {
-    const pill = document.createElement('div');
-    pill.className = 'age-pill';
+    // 1. Clone the template structure from HTML
+    const pill = template.cloneNode(true);
     pill.id = `ap-${i}`;
-    pill.innerHTML = `
-      <button class="age-pill-btn" onclick="toggleAgePill(${i})">
-        <span class="pill-badge">${ch.range}</span>
-        <span class="pill-label">${ch.label}</span>
-        <span class="pill-chevron">▼</span>
-      </button>
-      <div class="age-pill-content">
-        <div class="age-pill-text">${ch.text}</div>
-        <div class="pill-actions">
-          <button class="btn-ghost teal" onclick="showToast('📚 Related cases loaded')">Related Cases</button>
-          <button class="btn-ghost" onclick="showToast('⬇️ PDF downloaded')">⬇ Download</button>
-        </div>
-      </div>`;
+    pill.style.display = 'block'; // Make sure it's visible
+
+    // 2. Populate the data (JS only touches text, not HTML tags)
+    pill.querySelector('.pill-badge').textContent = ch.range;
+    pill.querySelector('.pill-label').textContent = ch.label;
+    pill.querySelector('.age-pill-text').textContent = ch.text;
+
+    // 3. Set the click event
+    pill.querySelector('.age-pill-btn').onclick = () => toggleAgePill(i);
+
+    // 4. Append to the DOM
     spine.appendChild(pill);
   });
 }
 
 function renderToolkit() {
   const grid = document.getElementById('toolkit-grid');
+  const template = document.getElementById('tmpl-toolkit-card');
+
   toolkit.forEach(t => {
-    const card = document.createElement('div');
-    card.className = 'toolkit-card';
-    card.innerHTML = `<div class="tc-icon">${t.icon}</div><div class="tc-name">${t.name}</div><div class="tc-desc">${t.desc}</div>`;
+    // 1. Clone the structure
+    const card = template.cloneNode(true);
+    card.style.display = 'block'; // Ensure it shows up
+
+    // 2. Only inject the DATA
+    card.querySelector('.tc-icon').textContent = t.icon;
+    card.querySelector('.tc-name').textContent = t.name;
+    card.querySelector('.tc-desc').textContent = t.desc;
+
+    // 3. Add behavior
     card.onclick = () => showToast(`📖 Opening ${t.name} guide…`);
+    
     grid.appendChild(card);
   });
 }
 
 function renderLangTiles() {
   const grid = document.getElementById('lang-tile-grid');
-  languages.forEach((l, i) => {
+  grid.innerHTML = '';
+  languages.forEach((l) => {
+    const isInstalled = activeLanguages.includes(l.name);
+    const isActive = selectedLanguage === l.name;
+
     const tile = document.createElement('div');
-    tile.className = 'lang-tile' + (i === 0 ? ' selected' : '');
-    tile.innerHTML = `<div class="lang-tile-name">${l.name}</div>
+    tile.className = `lang-tile ${isInstalled ? 'selected' : ''}`;
+    tile.innerHTML = `
+      <div class="lang-tile-name">${l.name}</div>
       <div class="lang-tile-native">${l.native}</div>
-      ${l.builtin ? '<div><span class="built-in-badge">built-in</span></div>' : ''}`;
+      ${isActive ? '<div><span class="built-in-badge" style="background:#5fffb0;color:#000">In Use</span></div>' 
+      : isInstalled ? '<div><span class="built-in-badge">Downloaded</span></div>' : ''}`;
+
     tile.onclick = () => {
-      document.querySelectorAll('.lang-tile').forEach(t => t.classList.remove('selected'));
-      tile.classList.add('selected');
-      if (!l.builtin) showToast(`⬇️ Downloading ${l.name} pack…`);
-      else showToast(`✅ ${l.name} selected`);
+      if (isInstalled) {
+        selectedLanguage = l.name;
+        renderLangTiles(); // Update UI to show new 'In Use'
+        showToast(`✅ ${l.name} is now the active language`);
+      } else {
+        showToast(`ℹ️ Download ${l.name} first in "Downloads & Features".`);
+      }
     };
     grid.appendChild(tile);
   });
@@ -121,13 +183,52 @@ function renderLangTiles() {
 
 function renderDownloadLangs() {
   const list = document.getElementById('lang-list');
-  downloadLangs.forEach(l => {
+  list.innerHTML = '';
+  languages.filter(l => !l.builtin).forEach(l => {
+    const isInstalled = activeLanguages.includes(l.name);
     const item = document.createElement('div');
     item.className = 'lang-item';
-    item.innerHTML = `<div class="lang-name">${l}</div><div class="lang-badge">~4 MB</div><button class="btn-dl" onclick="showToast('⬇️ ${l} pack downloading…')">Download</button>`;
+    item.innerHTML = `<div class="lang-name">${l.name}</div>
+      <div class="lang-badge">${isInstalled ? 'Downloaded' : '~4 MB'}</div>
+      ${isInstalled ? '' : `<button class="btn-dl" onclick="handleLanguageDownload('${l.name}')">Download</button>`}`;
     list.appendChild(item);
   });
 }
+
+function handleLanguageDownload(langName) {
+  // Check if we are at the limit (3 languages)
+  if (activeLanguages.length >= 3) {
+    // Get the name of the language that would be removed (the 3rd one)
+    const languageToRemove = activeLanguages[2];
+    
+    // Ask for confirmation
+    const userConfirmed = confirm(
+      `Storage full! You already have 3 languages active. ` +
+      `To download "${langName}", we must remove "${languageToRemove}". ` +
+      `Do you want to continue?`
+    );
+
+    // If user clicks "Cancel", stop the function
+    if (!userConfirmed) {
+      showToast('❌ Download cancelled');
+      return;
+    }
+
+    // If user clicked "OK", remove the 3rd language
+    activeLanguages.splice(2, 1);
+    showToast(`🗑️ ${languageToRemove} removed`);
+  }
+
+  // Add the new language
+  activeLanguages.push(langName);
+  
+  // Refresh UI
+  renderLangTiles();
+  renderDownloadLangs();
+  showToast(`✅ ${langName} activated`);
+}
+
+
 
 /* ─── AUTH ──────────────────────────────────────────────── */
 function switchAuthTab(tab) {
@@ -204,6 +305,31 @@ function handleAuthMenu() {
   } else {
     openAuth();
   }
+}
+
+// --- Configuration Save ---
+function saveConfig() {
+  const key = document.getElementById('ai-api-key').value;
+  const provider = document.getElementById('ai-provider').value;
+  const model = document.getElementById('ai-model').value;
+  
+  sessionStorage.setItem('ai-key', key);
+  localStorage.setItem('ai-provider', provider);
+  localStorage.setItem('ai-model', model);
+  
+  document.getElementById('api-status').textContent = key ? 'Stored Securely' : 'Not Set';
+  showToast('✅ Configuration Saved');
+}
+
+// Wipe API Key (Session Cleanup)
+function clearApiKey() {
+  sessionStorage.removeItem('ai-key');
+  localStorage.removeItem('ai-provider');
+  localStorage.removeItem('ai-model');
+  
+  document.getElementById('ai-api-key').value = '';
+  document.getElementById('api-status').textContent = 'Not Set';
+  showToast('🗑️ API Key and local session wiped');
 }
 
 /* ─── TABS ──────────────────────────────────────────────── */
@@ -284,14 +410,56 @@ function sendQuick(btn) {
   sendUserMessage(key || text, aiResponses[key] || null);
 }
 
-function sendMessage() {
+async function sendMessage() {
+  const apiKey = sessionStorage.getItem('ai-key');
+  const provider = localStorage.getItem('ai-provider') || 'openrouter';
+  const model = localStorage.getItem('ai-model');
   const input = document.getElementById('chat-input');
+  
+  if (!apiKey || !model) {
+    showToast('⚠️ Set API Key and Model first');
+    return;
+  }
+
   const text = input.value.trim();
   if (!text) return;
   input.value = '';
-  input.style.height = 'auto';
-  sendUserMessage(text, null);
+  addMsg('user', text);
+  showTyping();
+
+  try {
+    const url = provider === 'groq' 
+      ? "https://api.groq.com/openai/v1/chat/completions" 
+      : "https://openrouter.ai/api/v1/chat/completions";
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://naagrik.app",
+        "X-Title": "NAAGRIK"
+      },
+      body: JSON.stringify({
+        model: model,
+        messages: [
+          // PASTE THE SYSTEM PROMPT HERE (This controls the "Harsh Truth" personality)
+          { "role": "system", "content": "You are a direct, blunt Indian legal assistant. No formalities. No pleasantries. State facts only. If an action is illegal under Indian law, explicitly state it is illegal and list the specific consequences (punishments/sections). Be concise to save tokens."},
+          // This is the user's actual question
+          {"role": "user", "content": text}]
+      })
+    });
+
+    const data = await response.json();
+    hideTyping();
+    if (!response.ok) throw new Error(data.error?.message || 'API Request failed');
+    addMsg('ai', data.choices[0].message.content);
+  } catch (err) {
+    hideTyping();
+    addMsg('ai', '🚫 Error: ' + err.message);
+  }
 }
+
 
 function sendUserMessage(text, presetReply) {
   // Hide empty state and quick chips
@@ -350,16 +518,19 @@ function openSubPanel(name) {
   const sp = document.getElementById(`sp-${name}`);
   if (sp) {
     sp.classList.add('active');
-    document.getElementById('more-container').style.height = document.getElementById('tab-content').offsetHeight + 'px';
   }
 }
 
 function closeSubPanel(name) {
-  document.getElementById(`sp-${name}`).classList.remove('active');
+  const sp = document.getElementById(`sp-${name}`);
+  sp.classList.remove('active');
+  // Reset height just in case
+  document.getElementById('more-container').style.height = 'auto';
 }
 
 function closeAllSubPanels() {
   document.querySelectorAll('.sub-panel').forEach(sp => sp.classList.remove('active'));
+  document.getElementById('more-container').style.height = 'auto';
 }
 
 function trackCase() {
@@ -396,6 +567,7 @@ function toggleTheme() {
   currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', currentTheme);
   document.getElementById('theme-btn').textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+  localStorage.setItem('naagrik-theme', currentTheme);
 }
 
 /* ─── TOAST ─────────────────────────────────────────────── */
